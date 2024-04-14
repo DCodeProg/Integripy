@@ -101,7 +101,7 @@ def get_all(file_path: str) -> list[tuple[str, str]]:
         
         # Getting all possible file hashes
         for algo in hashlib.algorithms_available:
-            try: hash_list.append(_get_hash(file, algo))
+            try: hash_list.append((algo, _get_hash(file, algo)))
             except: continue
     
     # Sorting the list by algorithm name
