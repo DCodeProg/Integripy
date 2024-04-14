@@ -1,6 +1,5 @@
 import os
 from rich.prompt import IntPrompt, Prompt
-from typing import NoReturn
 
 
 def ask_choice(choices: None | list[tuple[str]] = None, show_choices: bool = False) -> int:
@@ -62,13 +61,13 @@ def ask_hash() -> str:
     return hash
     
     
-def ask_continue() -> NoReturn:
+def ask_continue() -> None:
     """Ask the user to press enter to continue
     """
     Prompt.ask("\n[cyan]⇒ Press [ENTER] to continue[/cyan]")
 
 
-def back_to_main_menu() -> NoReturn:
+def back_to_main_menu() -> None:
     """Ask the user to press enter to return in main menu
     """    
     Prompt.ask("\n[cyan]⇒ Press [ENTER] to go back to the main menu[/cyan]")
