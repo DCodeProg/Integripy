@@ -260,7 +260,7 @@ class CliApp():
         
         # Project description
         display.section_title("DESCRIPTION")
-        console.print("A project for file integrity checking, dev in \"Cybersécurité\" course at EPSI Lille", highlight=False)
+        console.print("A tool for file integrity checking, dev in \"Cybersécurité\" course at EPSI Lille", highlight=False)
         console.print("Created in april 2024", style="dim italic", highlight=False)
         
         # Author infos
