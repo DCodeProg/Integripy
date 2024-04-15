@@ -1,4 +1,4 @@
-from app.cli import CliApp
+from src.cli import CliApp
 
 def main():
     cli = CliApp()
