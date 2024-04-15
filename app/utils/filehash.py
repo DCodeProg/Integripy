@@ -123,6 +123,3 @@ def list_algorithms() -> list[str]:
     
     # Returns the sorted by name list of algorithm
     return sorted(algo_list)
-
-
-print(get_all("main.py"))
