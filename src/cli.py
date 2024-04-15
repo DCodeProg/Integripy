@@ -109,6 +109,9 @@ class CliApp():
         def clear_screen():
             self.show_menu('FILE HASH MENU', menu_choices)
         
+        def clear_screen():
+            self.show_menu('FILE HASH MENU', menu_choices)
+        
         menu_choices = [
             ("Get sha256", self.view_sha256),
             ("Get MD5", self.view_md5),
@@ -116,6 +119,7 @@ class CliApp():
             ("Get all", self.view_all_hashes),
             ("Clear screen", clear_screen),
             ("Main menu", self.quit_menu)
+        ]     
         ]     
         
         # Display the menu
@@ -128,6 +132,37 @@ class CliApp():
             choice = prompt.ask_choice(menu_choices)
             
             # If the user select back to main menu, left
+            match menu_choices[choice-1][1]:
+                case func if func == self.quit_menu:
+                    return
+                case _:
+                    self.menu_func(menu_choices, choice)
+
+            
+    def create_hashtable(self) -> Table:
+        table = Table(show_header=True, header_style="bold green", show_lines=True, title_style="magenta", title_justify="left", caption="")
+        table.add_column("Algorithm")
+        table.add_column("Hash", overflow="fold", style="dim")
+        return table
+    
+    def get_file_info(self, path: str) -> dict:
+        name = os.path.basename(path)
+        creation_date = datetime.fromtimestamp(os.path.getctime(path)).strftime("%d/%m/%Y")
+        return {'name': name, 'creation_date': creation_date, 'size': os.path.getsize(path)}
+
+    def _fill_hashtable(self, hash_table: Table, algorithms: list, path: str) -> None:
+        with console.status("[green]Hashing the file...") as status:
+            for i, algo in enumerate(lst:=algorithms):
+                status.update(f"[green]Hashing the file with {algo}... Done ({i}/{len(lst)})")
+                hash = filehash.get_hash(path, algo)
+                hash_table.add_row(algo, hash)
+                
+    def view_sha256(self) -> None:
+        try: 
+            path = prompt.ask_path()
+        except:
+            console.print("Invalid path", style="red")
+            return
             match menu_choices[choice-1][1]:
                 case func if func == self.quit_menu:
                     return
@@ -214,6 +249,60 @@ class CliApp():
         self._fill_hashtable(table, filehash.list_algorithms(), path)        
         console.print(table)
         
+        file_info = self.get_file_info(path)
+        table = self.create_hashtable()
+        table.title = f" {file_info['name']} - {file_info['size']} bytes - {file_info['creation_date']}"
+        
+        console.print()
+        self._fill_hashtable(table, ['sha256'], path)
+        console.print(table)
+        
+    def view_md5(self) -> None:
+        try: 
+            path = prompt.ask_path()
+        except:
+            console.print("Invalid path", style="red")
+            return
+        
+        file_info = self.get_file_info(path)
+        table = self.create_hashtable()
+        table.title = f" {file_info['name']} - {file_info['size']} bytes - {file_info['creation_date']}"
+        
+        console.print()
+        self._fill_hashtable(table, ['md5'], path)
+        console.print(table)
+        
+    def view_both_hashes(self) -> None:
+        try: 
+            path = prompt.ask_path()
+        except:
+            console.print("Invalid path", style="red")
+            return
+        
+        file_info = self.get_file_info(path)
+        table = self.create_hashtable()
+        table.title = f" {file_info['name']} - {file_info['size']} bytes - {file_info['creation_date']}"
+        
+        console.print()
+        self._fill_hashtable(table, ['sha256', 'md5'], path)
+        console.print(table)
+        
+    def view_all_hashes(self) -> None:
+        try: 
+            path = prompt.ask_path()
+        except:
+            console.print("Invalid path", style="red")
+            return
+        
+        file_info = self.get_file_info(path)
+        table = self.create_hashtable()
+        table.title = f" {file_info['name']} - {file_info['size']} bytes - {file_info['creation_date']}"
+        
+        
+        console.print()
+        self._fill_hashtable(table, filehash.list_algorithms(), path)        
+        console.print(table)
+        
                 
     "FILE INTEGRITY MENU"
     def fileintegrity_menu(self) -> None:
@@ -223,9 +312,13 @@ class CliApp():
         def clear_screen():
             self.show_menu('FILE HASH MENU', menu_choices)
         
+        def clear_screen():
+            self.show_menu('FILE HASH MENU', menu_choices)
+        
         menu_choices = [
             ("Check file integrity", self.check_integrity),
             ("List supported algorithms", self.list_algorithms),
+            ("Clear screen", clear_screen),
             ("Clear screen", clear_screen),
             ("Main menu", self.quit_menu)
         ]
@@ -271,6 +364,16 @@ class CliApp():
                     console.print(f"Hash found with {algo}", style="green")
                     return
                 
+        
+        console.print()
+        with console.status("[green]Checking integrity...") as status:
+            for i, algo in enumerate(lst:=filehash.list_algorithms()):
+                status.update(f"[green]Checking {algo}... Done {i}/{len(lst)}")
+                hash = filehash.get_hash(path, algo)
+                if expected_hash == hash:
+                    console.print(f"Hash found with {algo}", style="green")
+                    return
+                
         # If no hash correspond print a warning about file integrity
         console.print(f"Hash not found", style="bright_red")
         console.print(f"\n⚠️ File integrity could be compromised!", style="red")
@@ -284,6 +387,7 @@ class CliApp():
         
         # Display the list of algorithms
         console.print(f"\nSupported algorithms ({len(algo_list)})", end=" ")
+        console.print(algo_list)
         console.print(algo_list)
         
         
