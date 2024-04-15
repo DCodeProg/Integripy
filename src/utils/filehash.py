@@ -1,7 +1,7 @@
 import hashlib
 
 
-def _get_hash(file_path: str, algorithm: str) -> str:
+def get_hash(file_path: str, algorithm: str) -> str:
     """Returns file hash with the given algorithm
 
     Args:
@@ -25,82 +25,6 @@ def _get_hash(file_path: str, algorithm: str) -> str:
         
         # Return the hash
         return file_hash
-
-
-def get_sha256(file_path: str) -> tuple[str, str]:
-    """Get the sha256 hash of a file
-
-    Args:
-        file_path (str): File path location
-
-    Returns:
-        tuple[str, str]: Tuple (algorithm, file hash)
-    """
-    
-    # Get the file hash
-    file_hash = _get_hash(file_path, 'sha256')
-        
-    # Retuns a tuple (algorithm, file hash)
-    return ('sha256', file_hash)
-    
-    
-def get_md5(file_path: str) -> tuple[str, str]:
-    """Get the md5 hash of a file
-
-    Args:
-        file_path (str): File path location
-
-    Returns:
-        tuple[str, str]: Tuple (algorithm, file hash)
-    """
-    
-    # Get the file hash
-    file_hash = _get_hash(file_path, 'md5')
-        
-    # Retuns a tuple (algorithm, file hash)
-    return ('md5', file_hash)
-    
-    
-def get_both(file_path: str) -> list[tuple[str, str]]:
-    """Get both sha256 and md5 hashes of a file
-    
-    Args:
-        file_path (str): File path location
-
-    Returns:
-        list[tuple[str, str]]: List of file hashes tuple (algorithm, file hash)
-    """
-    
-    # Retuns a list with both tuple (algorithm, file hash)
-    return [
-        ('sha256', _get_hash(file_path, 'sha256')),
-        ('md5', _get_hash(file_path, 'md5')),
-    ]
-    
-    
-def get_all(file_path: str) -> list[tuple[str, str]]:
-    """Get all hashes of a file
-
-    Args:
-        file_path (str): File path location
-
-    Returns:
-        list[tuple[str, str]]: List of file hashes tuple (algorithm, file hash)
-    """    
-    
-    # List of all the file hashes
-    hash_list: list = []
-    
-    # Getting all possible file hashes
-    for algo in hashlib.algorithms_available:
-        try: hash_list.append((algo, _get_hash(file_path, algo)))
-        except: continue
-    
-    # Sorting the list by algorithm name
-    hash_list.sort(key = lambda key: key[0])
-    
-    # Returns the list of hashes tuples (algorithm, file hash)
-    return hash_list
 
 
 def list_algorithms() -> list[str]:
