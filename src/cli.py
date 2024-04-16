@@ -17,7 +17,7 @@ class CliApp():
         try:
             self._app_loop()
         except KeyboardInterrupt:
-            self.quit()
+            self.quit(True)
             
          
     def _app_loop(self):
@@ -331,8 +331,8 @@ class CliApp():
                 
                 
     "OTHER"
-    def quit(self):
+    def quit(self, on_newline: bool = False):
         """Exit the program
         """
-        display.goodbye(False)
+        display.goodbye(on_newline)
         quit()
